@@ -91,15 +91,14 @@ jobs:
         id: set_phpunit
         run: |
           if [[ "${{ matrix.php }}" > "6.0" ]]; then
-            echo '::set-output name=PHPUNIT::6.5.*'
+            wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp
+            chmod +x /tmp/phpunit-6.5.7.phar
+            mv /tmp/phpunit-6.5.7.phar /usr/local/bin/phpunit
           else
-            echo '::set-output name=PHPUNIT::5.7.*'
+            wget https://phar.phpunit.de/phpunit-5.phar -P /tmp
+            chmod +x /tmp/phpunit-5.phar
+            mv /tmp/phpunit-5.phar /usr/local/bin/phpunit
           fi
-
-      - name: 'Composer: set up PHPUnit'
-        run: |
-          composer require --no-update phpunit/phpunit:"${{ steps.set_phpunit.outputs.PHPUNIT }}"
-          composer update phpunit/phpunit:"${{ steps.set_phpunit.outputs.PHPUNIT }}"
 
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
@@ -122,7 +121,7 @@ jobs:
           composer-options: --ignore-platform-reqs
 
       - name: Run the unit tests - single site
-        run: src/vendor/bin/phpunit
+        run: /usr/local/bin/phpunit
 
       # - name: Run the unit tests - multisite
       #   run: src/vendor/bin/phpunit
