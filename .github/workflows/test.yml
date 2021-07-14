@@ -99,7 +99,16 @@ jobs:
       - name: 'Composer: set up PHPUnit'
         run: |
           composer require --no-update phpunit/phpunit:"${{ steps.set_phpunit.outputs.PHPUNIT }}"
+      
+      - name: 'Composer update'
+        if: ${{ matrix.php >= 7.3 && matrix.php < 8.0 }}
+        run: |
           composer update
+
+      - name: 'Composer update: --ignore-platform-reqs'
+        if: ${{ matrix.php < 7.3 || matrix.php >= 8.0 }}
+        run: |
+          composer update --ignore-platform-reqs
 
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
