@@ -72,7 +72,7 @@ jobs:
       - name: Check PHP Version
         run: php -v
 
-      - name: add bootstrap-config
+      - name: Add bootstrap-config
         run: |
           mv ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 
@@ -99,17 +99,24 @@ jobs:
       - name: 'Composer: set up PHPUnit'
         run: |
           composer require --no-update phpunit/phpunit:"${{ steps.set_phpunit.outputs.PHPUNIT }}"
+          composer update phpunit/phpunit:"${{ steps.set_phpunit.outputs.PHPUNIT }}"
 
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
-      # - if [[ $TRAVIS_PHP_VERSION = 7.1 || $TRAVIS_PHP_VERSION = 5.6 ]]; then composer install --ignore-platform-reqs; else composer install; fi
+      - name: Install Composer dependencies for PHP < 7.3
+        if: ${{ matrix.php < 7.3 }}
+        uses: "ramsey/composer-install@v1"
+        with:
+          composer-options: --ignore-platform-reqs
+          dependency-versions: "lowest"
+     
       - name: Install Composer dependencies for PHP < 8.0
         if: ${{ matrix.php >= 7.3 && matrix.php < 8.0 }}
         uses: "ramsey/composer-install@v1"
 
       # For the PHP 8.0 and above, we need to install with ignore platform reqs as not all dependencies allow it yet.
       - name: Install Composer dependencies for PHP >= 8.0
-        if: ${{ matrix.php < 7.3 || matrix.php >= 8.0 }}
+        if: ${{ matrix.php >= 8.0 }}
         uses: "ramsey/composer-install@v1"
         with:
           composer-options: --ignore-platform-reqs
