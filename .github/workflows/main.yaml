@@ -42,7 +42,7 @@ jobs:
 
     - name: Install WP Tests
       run: |
-        ./tests/bin/install-wp-tests.sh test root "" /tmp/wordpress mysql latest
+        ./tests/bin/install-wp-tests.sh test root "" /tmp/wordpress 127.0.0.1:3306 latest
 
   #  - name: Composer install
   #    run: composer install --optimize-autoloader --prefer-dist
