@@ -114,7 +114,7 @@ jobs:
           composer-options: --ignore-platform-reqs
 
       - name: Run the unit tests - single site
-        run: vendor/bin/phpunit
+        run: src/vendor/bin/phpunit
 
       # - name: Run the unit tests - multisite
       #   run: vendor/bin/phpunit
