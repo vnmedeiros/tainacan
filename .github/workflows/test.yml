@@ -103,18 +103,18 @@ jobs:
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       # - if [[ $TRAVIS_PHP_VERSION = 7.1 || $TRAVIS_PHP_VERSION = 5.6 ]]; then composer install --ignore-platform-reqs; else composer install; fi
       - name: Install Composer dependencies for PHP < 8.0
-        if: ${{ matrix.php < 8.0 }}
+        if: ${{ matrix.php >= 7.3 && matrix.php < 8.0 }}
         uses: "ramsey/composer-install@v1"
 
       # For the PHP 8.0 and above, we need to install with ignore platform reqs as not all dependencies allow it yet.
       - name: Install Composer dependencies for PHP >= 8.0
-        if: ${{ matrix.php >= 8.0 }}
+        if: ${{ matrix.php < 7.3 || matrix.php >= 8.0 }}
         uses: "ramsey/composer-install@v1"
         with:
           composer-options: --ignore-platform-reqs
 
       - name: Run the unit tests - single site
-        run: src/vendor/bin/phpunit
+        run: ./src/vendor/bin/phpunit
 
       # - name: Run the unit tests - multisite
       #   run: vendor/bin/phpunit
